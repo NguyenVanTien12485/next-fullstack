@@ -1,18 +1,22 @@
 import { Manager, Tenant } from "@/types/prismaTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
+import {createNewUserInDatabase } from "@/lib/utils";
 
 export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: async (headers) => {
         const session = await fetchAuthSession();
+        console.log("session", session);
+        
         const { idToken } = session.tokens ?? {};
         if (idToken) {
             headers.set("Authorization", `Bearer ${idToken}`);
         }
         return headers
-    }
+    },
+    responseHandler: "text",
   }),
   reducerPath: "api",
   tagTypes: [],
@@ -23,14 +27,20 @@ export const api = createApi({
           const session = await fetchAuthSession();
           const { idToken } = session.tokens ?? {};
           const user = await getCurrentUser();
-          const userRole = idToken?.payload["custom:role"] as String;
+          const userRole = idToken?.payload["custom:role"] as string;
 
           const endpoint =
             userRole === "manager" ? `/managers/${user.userId}` : `/tenants/${user.userId}`;
-
+            
             let userDetailsResponse = await fetchWithBQ(endpoint)
 
+            console.log("userDetailsResponse", userDetailsResponse);
+            
+
             // If user is not found in DB, create new user
+            if (userDetailsResponse.error && userDetailsResponse.error.status === 404) {
+              userDetailsResponse =  await createNewUserInDatabase(user, idToken, userRole, fetchWithBQ);
+            }
 
             return {
               data: {
@@ -39,6 +49,7 @@ export const api = createApi({
                 userRole
               }
             }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           return { error: error.message || "Failed to fetch user details" };
         }
@@ -47,4 +58,6 @@ export const api = createApi({
   }), 
 });
 
-export const {} = api;
+export const {
+  useGetAuthUserQuery,
+} = api;

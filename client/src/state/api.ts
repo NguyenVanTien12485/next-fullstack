@@ -16,7 +16,6 @@ export const api = createApi({
         }
         return headers
     },
-    responseHandler: "text",
   }),
   reducerPath: "api",
   tagTypes: [],

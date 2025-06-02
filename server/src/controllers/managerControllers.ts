@@ -12,12 +12,8 @@ export const getManager = async (req: Request, res: Response): Promise<void> => 
             where: { cognitoId },
         });
 
-        console.log("manager result:", manager);
-
         if (manager) {
             res.json(manager);            
-            console.log(123123);
-            
         } else {
             res.status(404).json({ message: "Manager not found" });
         }

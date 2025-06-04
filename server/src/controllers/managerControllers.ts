@@ -28,15 +28,6 @@ export const createManager = async (req: Request, res: Response): Promise<void> 
     try {
         const { cognitoId, name, email, phoneNumber } = req.body;
         console.log(req.body);
-        
-        // const checkManager = await prisma.manager.findUnique({
-        //     where: { cognitoId },
-        // });
-
-        // if (checkManager) {
-        //     res.status(400).json({ message: "Manager already exists" });
-        //     return;
-        // }
 
         const manager = await prisma.manager.create({
             data: { cognitoId, name, email, phoneNumber }
@@ -49,6 +40,27 @@ export const createManager = async (req: Request, res: Response): Promise<void> 
     } catch (error: any) {
         if (!res.headersSent) {
             res.status(500).json({ message: "Error creating manager: " + error.message });
+        }
+    }
+}
+
+export const updateManager = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { cognitoId } = req.params;
+        const {  name, email, phoneNumber } = req.body;
+        console.log(req.body);
+
+        const updateManager = await prisma.manager.update(
+            {
+                where: { cognitoId },
+                data: {  name, email, phoneNumber }
+            }
+        );
+
+        res.json(updateManager);
+    } catch (error: any) {
+        if (!res.headersSent) {
+            res.status(500).json({ message: "Error updating manager: " + error.message });
         }
     }
 }

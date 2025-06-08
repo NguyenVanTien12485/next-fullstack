@@ -1,10 +1,10 @@
-"use client";
-import SettingsForm from "@/components/SettingsForm";
+'use client';
+import SettingsForm from '@/components/SettingsForm';
 import {
     useGetAuthUserQuery,
     useUpdateManagerSettingsMutation,
-} from "@/state/api";
-import React, { use } from "react";
+} from '@/state/api';
+import React from 'react';
 
 function ManagerSettings() {
     const { data: authUser, isLoading: authLoading } = useGetAuthUserQuery();

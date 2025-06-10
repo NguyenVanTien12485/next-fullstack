@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import Navbar from "@/components/Navbar";
-import { NAVBAR_HEIGHT } from "@/lib/constants";
-import { useGetAuthUserQuery } from "@/state/api";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import Navbar from '@/components/Navbar';
+import { NAVBAR_HEIGHT } from '@/lib/constants';
+import { useGetAuthUserQuery } from '@/state/api';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
     const { data: authUser, isLoading: authLoading } = useGetAuthUserQuery();
@@ -16,10 +16,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         if (authUser) {
             const userRole = authUser.userRole?.toLowerCase();
             if (
-                (userRole === "manager" && pathname.startsWith("/search")) ||
-                (userRole === "manager" && pathname === "/")
+                (userRole === 'manager' && pathname.startsWith('/search')) ||
+                (userRole === 'manager' && pathname === '/')
             ) {
-                router.push("/managers/properties", { scroll: false });
+                router.push('/managers/properties', { scroll: false });
             } else {
                 setIsLoading(false);
             }

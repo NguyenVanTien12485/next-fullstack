@@ -31,9 +31,8 @@ const FiltersFull = () => {
 
     console.log('FiltersFull rendered with filters:', filters);
 
-    // This effect initializes localFilters with the global filters state
-    // when the component mounts or when the filters change.
-    // This ensures that localFilters is always in sync with the global state.
+    // Sync localFilters with global filters state whenever filters change.
+    // Keeps local UI state in sync with Redux/global state.
     useEffect(() => {
         setLocalFilters(filters);
     }, [filters]);
